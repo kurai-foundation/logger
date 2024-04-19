@@ -24,8 +24,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kurai-foundation/logger.git",
-    "directory": "token_monit"
+    "url": "git+https://github.com/kurai-foundation/logger.git"
   },
   "publishConfig": {
     "access": "public"
