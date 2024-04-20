@@ -1,6 +1,6 @@
 {
   "name": "@kurai-io/logger",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Logger with colored output for both node and web applications",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
