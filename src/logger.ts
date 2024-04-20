@@ -6,7 +6,8 @@ import { LogLevel } from "./utils"
 const LogsStorage: SessionLogsStorage = {
   [LogLevel.ERROR]: [],
   [LogLevel.INFO]: [],
-  [LogLevel.WARNING]: []
+  [LogLevel.WARNING]: [],
+  [LogLevel.SUCCESS]: []
 }
 
 const DefaultLoggers: {
@@ -136,6 +137,27 @@ export default class Logger {
   public static errorFrom(from: string, ...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
     logger.errorFrom(from, ...message)
+  }
+
+  /**
+   * Anonymous success log
+   *
+   * @param message log message
+   */
+  public static success(...message: any) {
+    const logger = DefaultLoggers.default ?? DefaultLoggers.browser
+    logger.success(...message)
+  }
+
+  /**
+   * Signed success log
+   *
+   * @param from sender
+   * @param message log message
+   */
+  public static successFrom(from: string, ...message: any) {
+    const logger = DefaultLoggers.default ?? DefaultLoggers.browser
+    logger.successFrom(from, ...message)
   }
 
   /**

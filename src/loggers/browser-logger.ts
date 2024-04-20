@@ -8,10 +8,13 @@ export default class BrowserLogger extends AbstractLogger {
   }
 
   protected log(logLevel: LogLevel, message: any[], from?: string) {
+    const colorsConfig = this.config.colors?.browser
+
     const messageColor = {
-      [LogLevel.WARNING]: "orange",
-      [LogLevel.ERROR]: "red",
-      [LogLevel.INFO]: "cornflowerblue"
+      [LogLevel.WARNING]: colorsConfig?.Warning ?? "orange",
+      [LogLevel.ERROR]: colorsConfig?.Error ?? "red",
+      [LogLevel.INFO]: colorsConfig?.Info ?? "cornflowerblue",
+      [LogLevel.SUCCESS]: colorsConfig?.Success ?? "green"
     }[logLevel]
 
     if (this.config.showPrefix === false) {

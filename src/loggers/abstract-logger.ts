@@ -33,5 +33,13 @@ export default abstract class AbstractLogger {
     this.log(LogLevel.ERROR, message, from)
   }
 
+  public success(...message: any) {
+    this.log(LogLevel.SUCCESS, message)
+  }
+
+  public successFrom(from: string, ...message: any) {
+    this.log(LogLevel.SUCCESS, message, from)
+  }
+
   protected abstract log(logLevel: LogLevel, message: any[], from?: string): void
 }

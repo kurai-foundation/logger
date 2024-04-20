@@ -13,6 +13,12 @@ export interface LoggerConfiguration {
 
   /** If set to true, log date will be attached into prefix */
   attachPrefixDate?: boolean
+
+  /** Custom output prefix colors */
+  colors?: {
+    node?: { [key in LogLevel]: string }
+    browser?: { [key in LogLevel]: string }
+  }
 }
 
 interface StoredLog {

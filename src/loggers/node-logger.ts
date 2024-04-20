@@ -11,11 +11,13 @@ export class NodeLogger extends AbstractLogger {
 
   protected log(logLevel: LogLevel, message: any[], from?: string) {
     colors.enable()
+    const colorsConfig = this.config.colors?.node
 
     const messageColor = {
-      [LogLevel.WARNING]: "yellow",
-      [LogLevel.ERROR]: "red",
-      [LogLevel.INFO]: "cyan"
+      [LogLevel.WARNING]: colorsConfig?.Warning ?? "yellow",
+      [LogLevel.ERROR]: colorsConfig?.Error ?? "red",
+      [LogLevel.INFO]: colorsConfig?.Info ?? "cyan",
+      [LogLevel.SUCCESS]: colorsConfig?.Success ?? "green"
     }[logLevel]
 
     if (this.config.showPrefix === false) {

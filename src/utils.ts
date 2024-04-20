@@ -20,5 +20,6 @@ export function generateReadableTimestamp(attachDate?: boolean, attachTime?: boo
 export enum LogLevel {
   INFO = "Info",
   WARNING = "Warning",
-  ERROR = "Error"
+  ERROR = "Error",
+  SUCCESS = "Success"
 }
