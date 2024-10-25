@@ -2,17 +2,19 @@ import { LogLevel } from "./utils"
 
 export interface LoggerConfiguration {
   /**
-   * If set as false, log prefix will be completely hidden
+   * If set as false, the log prefix will be completely hidden
    *
    * Default is true
    * */
   showPrefix?: boolean
 
-  /** If set to true, log time will be attached into prefix */
+  /** If set to true, log time will be attached into the prefix */
   attachPrefixTime?: boolean
 
-  /** If set to true, log date will be attached into prefix */
+  /** If set to true, log date will be attached into the prefix */
   attachPrefixDate?: boolean
+
+  storage: SessionLogsStorage
 
   /** Custom output prefix colors */
   colors?: {

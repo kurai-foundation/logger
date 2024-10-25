@@ -1,8 +1,8 @@
-import { LoggerConfiguration, SessionLogsStorage } from "../types"
-import { LogLevel } from "../utils"
+import { LoggerConfiguration } from "../../types"
+import { LogLevel } from "../../utils"
 
 export default abstract class AbstractLogger {
-  protected constructor(protected config: LoggerConfiguration, protected logsStorage: SessionLogsStorage) {
+  protected constructor(protected config: LoggerConfiguration) {
   }
 
   public reconfigure(config: LoggerConfiguration) {

@@ -1,39 +1,39 @@
 {
-  "name": "@kurai-io/logger",
-  "version": "0.0.4",
-  "description": "Logger with colored output for both node and web applications",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "logger",
-    "web",
-    "node",
-    "js"
-  ],
-  "author": "Kurai Foundation",
-  "license": "MIT",
-  "devDependencies": {
-    "tsc": "^2.0.4",
-    "typescript": "^5.4.2"
-  },
-  "files": [
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kurai-foundation/logger.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "bugs": {
-    "url": "https://github.com/kurai-foundation/logger/issues"
-  },
-  "homepage": "https://github.com/kurai-foundation/logger#readme",
-  "dependencies": {
-    "colors": "^1.4.0"
-  }
+    "name": "@kurai-io/logger",
+    "version": "0.1.0",
+    "description": "Logger with colored output for both node and web applications",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "logger",
+        "web",
+        "node",
+        "js"
+    ],
+    "author": "Kurai Foundation",
+    "license": "MIT",
+    "devDependencies": {
+        "tsc": "^2.0.4",
+        "typescript": "^5.4.2"
+    },
+    "files": [
+        "dist"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kurai-foundation/logger.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "bugs": {
+        "url": "https://github.com/kurai-foundation/logger/issues"
+    },
+    "homepage": "https://github.com/kurai-foundation/logger#readme",
+    "dependencies": {
+        "colors": "^1.4.0"
+    }
 }

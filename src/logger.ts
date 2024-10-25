@@ -1,4 +1,4 @@
-import AbstractLogger from "./loggers/abstract-logger"
+import AbstractLogger from "./loggers/abstract/abstract-logger"
 import BrowserLogger from "./loggers/browser-logger"
 import { LoggerConfiguration, SessionLogsStorage } from "./types"
 import { LogLevel } from "./utils"
@@ -15,7 +15,19 @@ const DefaultLoggers: {
   browser: AbstractLogger
   node?: AbstractLogger
 } = {
-  browser: new BrowserLogger({}, LogsStorage)
+  browser: new BrowserLogger({
+    storage: LogsStorage
+  })
+}
+
+interface INamedLogger {
+  info(...message: string[]): void
+
+  warning(...message: string[]): void
+
+  success(...message: string[]): void
+
+  error(...message: string[]): void
 }
 
 export default class Logger {
@@ -44,6 +56,20 @@ export default class Logger {
   }
 
   /**
+   * Get named logger
+   *
+   * @param namespace
+   */
+  public static named(namespace: string): INamedLogger {
+    return {
+      info: (...message: string[]) => this.infoFrom(namespace, ...message),
+      warning: (...message: string[]) => this.warningFrom(namespace, ...message),
+      error: (...message: string[]) => this.errorFrom(namespace, ...message),
+      success: (...message: string[]) => this.successFrom(namespace, ...message)
+    }
+  }
+
+  /**
    * Asynchronously import node logger and write it into memory
    *
    * @param config default configuration, optional
@@ -51,7 +77,10 @@ export default class Logger {
   public static async setupNodeLogger(config?: LoggerConfiguration): Promise<void> {
     const NodeLogger = await import("./loggers/node-logger")
 
-    DefaultLoggers.node = new NodeLogger.NodeLogger(config ?? {}, LogsStorage)
+    DefaultLoggers.node = new NodeLogger.NodeLogger({
+      storage: LogsStorage,
+      ...config ?? {}
+    })
   }
 
   /**
@@ -163,7 +192,7 @@ export default class Logger {
   /**
    * Export stored logs
    */
-  public exportStoredLogs(): SessionLogsStorage {
+  public static exportStoredLogs(): SessionLogsStorage {
     return JSON.parse(JSON.stringify(LogsStorage))
   }
 }

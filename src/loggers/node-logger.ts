@@ -1,12 +1,12 @@
 import colors from "colors/safe"
-import { LoggerConfiguration, SessionLogsStorage } from "../types"
-import AbstractLogger from "./abstract-logger"
+import { LoggerConfiguration } from "../types"
+import AbstractLogger from "./abstract/abstract-logger"
 import { generateReadableTimestamp, LogLevel } from "../utils"
 
 
 export class NodeLogger extends AbstractLogger {
-  constructor(config: LoggerConfiguration, storage: SessionLogsStorage) {
-    super(config, storage)
+  constructor(config: LoggerConfiguration) {
+    super(config)
   }
 
   protected log(logLevel: LogLevel, message: any[], from?: string) {
@@ -36,7 +36,7 @@ export class NodeLogger extends AbstractLogger {
 
     console.log(...nextMessage)
 
-    this.logsStorage[logLevel].push({
+    this.config.storage?.[logLevel].push({
       timestamp: Date.now(),
       level: logLevel,
       message: JSON.stringify(nextMessage)

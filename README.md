@@ -4,14 +4,21 @@ Logger with colored output for both node and web applications
 
 ## Table of contents
 
-- [Use logger with browser environment](#use-logger-with-browser-environment)
-- [Use logger with node environment](#use-logger-with-node-environment)
+- [Environment-based setup](#environment-based-setup)
+    - [Use logger with browser environment](#use-logger-with-browser-environment)
+    - [Use logger with node environment](#use-logger-with-node-environment)
 - [Configuring logger](#configuring-the-logger)
+    - [Reconfiguring logger](#reconfiguring-logger)
+    - [Named logger instance](#named-logger-instance)
 - [Exporting stored logs](#exporting-stored-logs)
 - [Available logging methods](#available-logging-methods)
 - [License](#license)
 
-## Use logger with browser environment
+## Environment-based setup
+
+This section describes how to customize the logger to fit your environment.
+
+### Use logger with browser environment
 
 If you want to use the logger in a browser environment,
 just call the static methods of the main class (`Logger`) because the browser
@@ -32,7 +39,7 @@ import Logger from "@kurai-io/logger"
 Logger.browser.info("My message")
 ```
 
-## Use logger with node environment
+### Use logger with node environment
 
 If you want to use the logger in a node environment,
 you must first set up the node logger. The node logger
@@ -64,7 +71,11 @@ Logger.unsafeNode.info("My message")
 
 ```
 
-## Changing default logger
+## Configuring the logger
+
+This section describes the process of customizing the logger to your needs
+
+### Changing default logger
 
 The default logger (`BrowserLogger`) will be
 used by the logging methods of the main class (`Logger`).
@@ -80,10 +91,9 @@ Logger.setDefaultLogger(Logger.unsafeNode)
 _Note: you must configure the node logger before using the
 logging methods, otherwise you will get an error at runtime_
 
-## Configuring the logger
+### Reconfiguring logger
 
-If you want to remove or change the prefix, you can
-change the configuration of the logger
+This method will reconfigure all defined loggers.
 
 ```ts
 import Logger from "@kurai-io/logger"
@@ -100,11 +110,13 @@ Logger.reconfigure({
   attachPrefixTime: true,
 
   /* If set to true, log date will be attached into prefix */
-  attachPrefixDate: true
+  attachPrefixDate: true,
+
+  /* Define custom logs storage */
+  storage: LogsStorage
 })
 ```
 
-This method will reconfigure all defined loggers.
 If you only want to reconfigure a specific logger, call the same method on the
 of the desired logger instance
 
@@ -114,6 +126,19 @@ import Logger from "@kurai-io/logger"
 Logger.browser.reconfigure({
   // Configuration
 })
+```
+
+### Named logger instance
+
+If you plan to output many messages from a single component
+of your application, you may want to get a named logger instance
+to avoid constantly specifying namespace
+
+```typescript
+const logger = Logger.named("MyNamespace")
+
+// Only info, warning, error and success methods are availble
+logger.info("Hello world!") // => [Info from MyNamespace] Hello world!
 ```
 
 ## Exporting stored logs
@@ -148,6 +173,8 @@ The `StoredLog` object will always contain the following keys:
 | `errorFrom(from: string, ...message: any[])`   | red                  | red               |
 
 _Note: colors will not be used if the prefix is completely disabled_
+
+_Note 2: only methods without the `From` postfix are available for the named logger_
 
 ## License
 

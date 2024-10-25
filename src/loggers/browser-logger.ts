@@ -1,10 +1,10 @@
-import AbstractLogger from "./abstract-logger"
-import { LoggerConfiguration, SessionLogsStorage } from "../types"
+import AbstractLogger from "./abstract/abstract-logger"
+import { LoggerConfiguration } from "../types"
 import { generateReadableTimestamp, LogLevel } from "../utils"
 
 export default class BrowserLogger extends AbstractLogger {
-  constructor(config: LoggerConfiguration, storage: SessionLogsStorage) {
-    super(config, storage)
+  constructor(config: LoggerConfiguration) {
+    super(config)
   }
 
   protected log(logLevel: LogLevel, message: any[], from?: string) {
@@ -33,7 +33,7 @@ export default class BrowserLogger extends AbstractLogger {
 
     console.log(...nextMessage)
 
-    this.logsStorage[logLevel].push({
+    this.config.storage?.[logLevel].push({
       timestamp: Date.now(),
       level: logLevel,
       message: JSON.stringify(nextMessage)
