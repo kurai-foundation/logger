@@ -1,5 +1,4 @@
-import { LoggerConfiguration } from "../../types"
-import { LogLevel } from "../../utils"
+import { LoggerConfiguration, LogLevel } from "../../types"
 
 export default abstract class AbstractLogger {
   protected constructor(protected config: LoggerConfiguration) {

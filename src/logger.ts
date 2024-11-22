@@ -1,14 +1,15 @@
 import AbstractLogger from "./loggers/abstract/abstract-logger"
 import BrowserLogger from "./loggers/browser-logger"
-import { LoggerConfiguration, SessionLogsStorage } from "./types"
-import { LogLevel } from "./utils"
+import { INamedLogger, LoggerConfiguration, LogLevel, SessionLogsStorage } from "./types"
 
-const LogsStorage: SessionLogsStorage = {
+
+export const LogsStorage: SessionLogsStorage = {
   [LogLevel.ERROR]: [],
   [LogLevel.INFO]: [],
   [LogLevel.WARNING]: [],
   [LogLevel.SUCCESS]: []
 }
+
 
 const DefaultLoggers: {
   default?: AbstractLogger
@@ -18,16 +19,6 @@ const DefaultLoggers: {
   browser: new BrowserLogger({
     storage: LogsStorage
   })
-}
-
-interface INamedLogger {
-  info(...message: string[]): void
-
-  warning(...message: string[]): void
-
-  success(...message: string[]): void
-
-  error(...message: string[]): void
 }
 
 export default class Logger {

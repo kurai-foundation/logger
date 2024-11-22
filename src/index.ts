@@ -1,6 +1,8 @@
-import { LogLevel } from "./utils"
+import { LogsStorage } from "./logger"
+import { LogLevel } from "./types"
 
 export { default } from "./logger"
 export {
-  LogLevel
+  LogLevel,
+  LogsStorage
 }

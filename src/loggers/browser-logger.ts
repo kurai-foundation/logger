@@ -1,6 +1,5 @@
 import AbstractLogger from "./abstract/abstract-logger"
-import { LoggerConfiguration } from "../types"
-import { generateReadableTimestamp, LogLevel } from "../utils"
+import { LoggerConfiguration, LogLevel } from "../types"
 
 export default class BrowserLogger extends AbstractLogger {
   constructor(config: LoggerConfiguration) {
@@ -8,13 +7,11 @@ export default class BrowserLogger extends AbstractLogger {
   }
 
   protected log(logLevel: LogLevel, message: any[], from?: string) {
-    const colorsConfig = this.config.colors?.browser
-
     const messageColor = {
-      [LogLevel.WARNING]: colorsConfig?.Warning ?? "orange",
-      [LogLevel.ERROR]: colorsConfig?.Error ?? "red",
-      [LogLevel.INFO]: colorsConfig?.Info ?? "cornflowerblue",
-      [LogLevel.SUCCESS]: colorsConfig?.Success ?? "green"
+      [LogLevel.WARNING]: [ "orange", "black" ],
+      [LogLevel.ERROR]: [ "red", "white" ],
+      [LogLevel.INFO]: [ "cornflowerblue", "black" ],
+      [LogLevel.SUCCESS]: [ "green", "white" ]
     }[logLevel]
 
     if (this.config.showPrefix === false) {
@@ -22,14 +19,30 @@ export default class BrowserLogger extends AbstractLogger {
       return
     }
 
-    const readableTimestamp = generateReadableTimestamp(this.config.attachPrefixDate, this.config.attachPrefixTime)
+    const datePrefix = new Date().toLocaleDateString("en-US")
+    const timePrefix = new Date().toLocaleTimeString("en-US", { hour12: false })
+    const combinedPrefix = new Date().toISOString()
 
-    const nextMessage = [
-      `\n%c[${ logLevel }${ from ? ` from ${ from }` : "" }${ readableTimestamp ? ` at ${ readableTimestamp }` : "" }]`.replace(/\s{2,}/g, ""),
-      `color:${ messageColor }`,
-      ...message,
-      "\n\n"
-    ]
+    const prefix = Boolean(this.config.attachPrefixDate && this.config.attachPrefixTime)
+      ? combinedPrefix
+      : this.config.attachPrefixDate ? datePrefix
+        : this.config.attachPrefixTime ? timePrefix
+          : undefined
+
+    const override = this.config.overrideMessageOutput
+    const nextMessage = override ? override(logLevel, message, from) : [
+      [
+        prefix ? `%c${ prefix }` : "",
+        `%c${ logLevel }`,
+        from ? `%c ${ from } ` : "",
+        "%c",
+        ...message
+      ].filter(Boolean).join(" ").replace(/\s{2,}/g, " ").trim(),
+      prefix ? "color: gray" : "",
+      `color: ${ messageColor[0] }`,
+      from ? `color: ${ messageColor[1] }; background: ${ messageColor[0] }` : "",
+      "color: unset"
+    ].filter(Boolean)
 
     console.log(...nextMessage)
 

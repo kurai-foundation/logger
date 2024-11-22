@@ -1,7 +1,6 @@
 import colors from "colors/safe"
-import { LoggerConfiguration } from "../types"
+import { LoggerConfiguration, LogLevel } from "../types"
 import AbstractLogger from "./abstract/abstract-logger"
-import { generateReadableTimestamp, LogLevel } from "../utils"
 
 
 export class NodeLogger extends AbstractLogger {
@@ -11,13 +10,12 @@ export class NodeLogger extends AbstractLogger {
 
   protected log(logLevel: LogLevel, message: any[], from?: string) {
     colors.enable()
-    const colorsConfig = this.config.colors?.node
 
     const messageColor = {
-      [LogLevel.WARNING]: colorsConfig?.Warning ?? "yellow",
-      [LogLevel.ERROR]: colorsConfig?.Error ?? "red",
-      [LogLevel.INFO]: colorsConfig?.Info ?? "cyan",
-      [LogLevel.SUCCESS]: colorsConfig?.Success ?? "green"
+      [LogLevel.WARNING]: "yellow",
+      [LogLevel.ERROR]: "red",
+      [LogLevel.INFO]: "cyan",
+      [LogLevel.SUCCESS]: "green"
     }[logLevel]
 
     if (this.config.showPrefix === false) {
@@ -27,12 +25,16 @@ export class NodeLogger extends AbstractLogger {
       return
     }
 
-    const readableTimestamp = generateReadableTimestamp(this.config.attachPrefixTime, this.config.attachPrefixDate)
+    const fgColor = (msg: string) => (colors as any)[messageColor](msg) as string
+    const bgColor = (msg: string) => (colors as any)["bg" + messageColor[0].toUpperCase() + messageColor.slice(1)](msg) as string
 
-    const nextMessage = [
-      (colors as any)[messageColor]?.(`[${ logLevel }${ from ? ` from ${ from }` : "" }${ readableTimestamp ? ` at ${ readableTimestamp }` : "" }]`.replace(/\s{2,}/g, "")),
-      ...message
-    ]
+    const override = this.config.overrideMessageOutput
+    const nextMessage = override ? override(logLevel, message, from) : [
+      colors.grey(new Date().toISOString()),
+      fgColor(logLevel),
+      from ? bgColor(` ${ from } `) : "",
+      ...message.map(i => JSON.stringify(i).replace(/"([^"]+)":/g, "$1:").replace(/"/g, ""))
+    ].filter(Boolean)
 
     console.log(...nextMessage)
 

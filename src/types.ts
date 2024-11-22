@@ -1,4 +1,19 @@
-import { LogLevel } from "./utils"
+export enum LogLevel {
+  INFO = "INFO",
+  WARNING = "WARNING",
+  ERROR = "ERROR",
+  SUCCESS = "SUCCESS"
+}
+
+export interface INamedLogger {
+  info(...message: string[]): void
+
+  warning(...message: string[]): void
+
+  success(...message: string[]): void
+
+  error(...message: string[]): void
+}
 
 export interface LoggerConfiguration {
   /**
@@ -16,11 +31,7 @@ export interface LoggerConfiguration {
 
   storage: SessionLogsStorage
 
-  /** Custom output prefix colors */
-  colors?: {
-    node?: { [key in LogLevel]: string }
-    browser?: { [key in LogLevel]: string }
-  }
+  overrideMessageOutput?(level: LogLevel, message: any[], from?: string): string[]
 }
 
 interface StoredLog {
