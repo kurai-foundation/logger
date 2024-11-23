@@ -33,7 +33,7 @@ export class NodeLogger extends AbstractLogger {
       colors.grey(new Date().toISOString()),
       fgColor(logLevel),
       from ? bgColor(` ${ from } `) : "",
-      ...message.map(i => JSON.stringify(i).replace(/"([^"]+)":/g, "$1:").replace(/"/g, ""))
+      ...message
     ].filter(Boolean)
 
     console.log(...nextMessage)
