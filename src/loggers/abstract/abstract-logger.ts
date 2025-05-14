@@ -48,7 +48,7 @@ export default abstract class AbstractLogger {
   protected getJsonResponse(message: any[], logLevel: LogLevel, from?: string) {
     const self = this
     return {
-      set json(data: ((message: string) => PossibleInputs) | PossibleInputs) {
+      set json(data: ((message: string) => PossibleInputs) | PossibleInputs | [string, PossibleInputs]) {
         self.jsonLog(typeof data === "function" ? data(message.map(m => typeof m === "object" ? JSON.stringify(m) : m).join(" ")) : data, logLevel, from)
       }
     }
@@ -56,12 +56,25 @@ export default abstract class AbstractLogger {
 
   protected jsonLog(message: PossibleInputs, level: LogLevel, module?: string) {
     if (!this.config.json) return
+
+    let _module = module ?? "system"
+    let _message = message
+
+    if (typeof message === "object" && "__module" in message) {
+      const { __module, ...rest } = message
+
+      if (__module) {
+        _module = __module
+        _message = rest
+      }
+    }
+
     if (this.config.storage) this.config.storage.push({ level, timestamp: Date.now(), message: JSON.stringify(message) })
     console.info(JSON.stringify({
-      module: module ?? "system",
+      module: _module ?? "system",
       level,
       timestamp: Date.now(),
-      data: typeof message !== "object" ? { message } : message
+      data: typeof _message !== "object" ? { _message } : _message
     }))
   }
 }
