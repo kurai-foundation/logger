@@ -1,9 +1,11 @@
 export enum LogLevel {
-  INFO = "INFO",
-  WARNING = "WARNING",
-  ERROR = "ERROR",
-  SUCCESS = "SUCCESS"
+  INFO = "info",
+  WARNING = "warning",
+  ERROR = "error",
+  SUCCESS = "success"
 }
+
+export type PossibleInputs = Record<any, any> | Array<any> | string | number | boolean
 
 export interface INamedLogger {
   info(...message: string[]): void
@@ -23,21 +25,23 @@ export interface LoggerConfiguration {
    * */
   showPrefix?: boolean
 
+  json?: boolean
+
   /** If set to true, log time will be attached into the prefix */
   attachPrefixTime?: boolean
 
   /** If set to true, log date will be attached into the prefix */
   attachPrefixDate?: boolean
 
-  storage: SessionLogsStorage
+  storage?: SessionLogsStorage
 
   overrideMessageOutput?(level: LogLevel, message: any[], from?: string): string[]
 }
 
-interface StoredLog {
+export interface StoredLog {
   timestamp: number
   level: LogLevel
   message: string
 }
 
-export type SessionLogsStorage = { [key in LogLevel]: StoredLog[] }
+export type SessionLogsStorage = { push: (content: StoredLog) => void }

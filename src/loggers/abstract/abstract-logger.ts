@@ -1,44 +1,67 @@
-import { LoggerConfiguration, LogLevel } from "../../types"
+import { LoggerConfiguration, LogLevel, PossibleInputs } from "../../types"
 
 export default abstract class AbstractLogger {
   protected constructor(protected config: LoggerConfiguration) {
   }
 
-  public reconfigure(config: LoggerConfiguration) {
-    this.config = config
+  public reconfigure(config: Partial<LoggerConfiguration>) {
+    this.config = { ...this.config, ...config }
+    return this
   }
 
   public info(...message: any) {
-    this.log(LogLevel.INFO, message)
+    return this.log(LogLevel.INFO, message)
   }
 
   public infoFrom(from: string, ...message: any) {
-    this.log(LogLevel.INFO, message, from)
+    return this.log(LogLevel.INFO, message, from)
   }
 
   public warning(...message: any) {
-    this.log(LogLevel.WARNING, message)
+    return this.log(LogLevel.WARNING, message)
   }
 
   public warningFrom(from: string, ...message: any) {
-    this.log(LogLevel.WARNING, message, from)
+    return this.log(LogLevel.WARNING, message, from)
   }
 
   public error(...message: any) {
-    this.log(LogLevel.ERROR, message)
+    return this.log(LogLevel.ERROR, message)
   }
 
   public errorFrom(from: string, ...message: any) {
-    this.log(LogLevel.ERROR, message, from)
+    return this.log(LogLevel.ERROR, message, from)
   }
 
   public success(...message: any) {
-    this.log(LogLevel.SUCCESS, message)
+    return this.log(LogLevel.SUCCESS, message)
   }
 
   public successFrom(from: string, ...message: any) {
-    this.log(LogLevel.SUCCESS, message, from)
+    return this.log(LogLevel.SUCCESS, message, from)
   }
 
-  protected abstract log(logLevel: LogLevel, message: any[], from?: string): void
+  public abstract log(logLevel: LogLevel, message: any[], from?: string): {
+    set json(data: ((message: string) => PossibleInputs) | PossibleInputs)
+  }
+
+  protected getJsonResponse(message: any[], logLevel: LogLevel, from?: string) {
+    const self = this
+    return {
+      set json(data: ((message: string) => PossibleInputs) | PossibleInputs) {
+        self.jsonLog(typeof data === "function" ? data(message.map(m => typeof m === "object" ? JSON.stringify(m) : m).join(" ")) : data, logLevel, from)
+      }
+    }
+  }
+
+  protected jsonLog(message: PossibleInputs, level: LogLevel, module?: string) {
+    if (!this.config.json) return
+    if (this.config.storage) this.config.storage.push({ level, timestamp: Date.now(), message: JSON.stringify(message) })
+    console.info(JSON.stringify({
+      module: module ?? "system",
+      level,
+      timestamp: Date.now(),
+      data: typeof message !== "object" ? { message } : message
+    }))
+  }
 }

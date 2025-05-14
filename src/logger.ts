@@ -1,15 +1,8 @@
 import AbstractLogger from "./loggers/abstract/abstract-logger"
 import BrowserLogger from "./loggers/browser-logger"
-import { INamedLogger, LoggerConfiguration, LogLevel, SessionLogsStorage } from "./types"
+import { INamedLogger, LoggerConfiguration, SessionLogsStorage, StoredLog } from "./types"
 
-
-export const LogsStorage: SessionLogsStorage = {
-  [LogLevel.ERROR]: [],
-  [LogLevel.INFO]: [],
-  [LogLevel.WARNING]: [],
-  [LogLevel.SUCCESS]: []
-}
-
+export const LogsStorage: SessionLogsStorage = Array<StoredLog>()
 
 const DefaultLoggers: {
   default?: AbstractLogger
@@ -53,10 +46,22 @@ export default class Logger {
    */
   public static named(namespace: string): INamedLogger {
     return {
+      /**
+       * Signed info log
+       * @param message log message
+       */
       info: (...message: string[]) => this.infoFrom(namespace, ...message),
       warning: (...message: string[]) => this.warningFrom(namespace, ...message),
+      /**
+       * Signed error log
+       * @param message log message
+       */
       error: (...message: string[]) => this.errorFrom(namespace, ...message),
-      success: (...message: string[]) => this.successFrom(namespace, ...message)
+      /**
+       * Signed success log
+       * @param message log message
+       */
+      success: (...message: string[]) => this.successFrom(namespace, ...message),
     }
   }
 
@@ -103,7 +108,7 @@ export default class Logger {
    */
   public static info(...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
-    logger.info(...message)
+    return logger.info(...message)
   }
 
   /**
@@ -114,7 +119,7 @@ export default class Logger {
    */
   public static infoFrom(from: string, ...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
-    logger.infoFrom(from, ...message)
+    return logger.infoFrom(from, ...message)
   }
 
   /**
@@ -124,7 +129,7 @@ export default class Logger {
    */
   public static warning(...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
-    logger.warning(...message)
+    return logger.warning(...message)
   }
 
   /**
@@ -135,7 +140,7 @@ export default class Logger {
    */
   public static warningFrom(from: string, ...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
-    logger.warningFrom(from, ...message)
+    return logger.warningFrom(from, ...message)
   }
 
   /**
@@ -145,7 +150,7 @@ export default class Logger {
    */
   public static error(...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
-    logger.error(...message)
+    return logger.error(...message)
   }
 
   /**
@@ -156,7 +161,7 @@ export default class Logger {
    */
   public static errorFrom(from: string, ...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
-    logger.errorFrom(from, ...message)
+    return logger.errorFrom(from, ...message)
   }
 
   /**
@@ -166,7 +171,7 @@ export default class Logger {
    */
   public static success(...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
-    logger.success(...message)
+    return logger.success(...message)
   }
 
   /**
@@ -177,7 +182,7 @@ export default class Logger {
    */
   public static successFrom(from: string, ...message: any) {
     const logger = DefaultLoggers.default ?? DefaultLoggers.browser
-    logger.successFrom(from, ...message)
+    return logger.successFrom(from, ...message)
   }
 
   /**
