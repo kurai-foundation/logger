@@ -5,7 +5,7 @@ export enum LogLevel {
   SUCCESS = "success"
 }
 
-export type PossibleInputs = ({ [key: string]: any } & { __module?: string }) | Array<any> | string | number | boolean
+export type PossibleInputs = ({ [key: string]: any } & { __module?: string, __level?: LogLevel }) | Array<any> | string | number | boolean
 
 export interface INamedLogger {
   info(...message: string[]): void

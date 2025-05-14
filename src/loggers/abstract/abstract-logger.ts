@@ -59,20 +59,21 @@ export default abstract class AbstractLogger {
 
     let _module = module ?? "system"
     let _message = message
+    let _level = level
+
 
     if (typeof message === "object" && "__module" in message) {
-      const { __module, ...rest } = message
+      const { __module, __level, ...rest } = message
 
-      if (__module) {
-        _module = __module
-        _message = rest
-      }
+      if (__module) _module = __module
+      if (__level) _level = __level
+      _message = rest
     }
 
     if (this.config.storage) this.config.storage.push({ level, timestamp: Date.now(), message: JSON.stringify(message) })
     console.info(JSON.stringify({
       module: _module ?? "system",
-      level,
+      level: _level,
       timestamp: Date.now(),
       data: typeof _message !== "object" ? { _message } : _message
     }))
