@@ -25,7 +25,21 @@ export interface LoggerConfiguration {
    * */
   showPrefix?: boolean
 
+  /**
+   * Set true to enable json logs mode
+   *
+   * _Note that in json mode, all logs that have no json description will be suppressed_
+   *
+   * @default false
+   */
   json?: boolean
+
+  /**
+   * Calls each time before log will be serialized and sent
+   *
+   * Return null to suppress log
+   */
+  middleware?<T = any>(message: T): T | null | undefined
 
   /** If set to true, log time will be attached into the prefix */
   attachPrefixTime?: boolean
@@ -33,8 +47,12 @@ export interface LoggerConfiguration {
   /** If set to true, log date will be attached into the prefix */
   attachPrefixDate?: boolean
 
+  /** Logs storage */
   storage?: SessionLogsStorage
 
+  /**
+   * Override message output. Has no influence on json logs
+   */
   overrideMessageOutput?(level: LogLevel, message: any[], from?: string): string[]
 }
 

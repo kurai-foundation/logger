@@ -9,7 +9,8 @@ export class NodeLogger extends AbstractLogger {
   }
 
   public log(logLevel: LogLevel, message: any[], from?: string) {
-    if (this.config.json) return this.getJsonResponse(message, logLevel, from)
+    const rv = this.getJsonResponse(message, logLevel, from)
+    if (this.config.json) return rv
 
     colors.enable()
 
@@ -21,10 +22,10 @@ export class NodeLogger extends AbstractLogger {
     }[logLevel]
 
     if (this.config.showPrefix === false) {
-      console.log(...message)
+      this.withMiddleware(message, m => console.log(...m))
 
       colors.disable()
-      return this.getJsonResponse(message, logLevel, from)
+      return rv
     }
 
     const fgColor = (msg: string) => (colors as any)[messageColor](msg) as string
@@ -38,7 +39,7 @@ export class NodeLogger extends AbstractLogger {
       ...message
     ].filter(Boolean)
 
-    console.log(...nextMessage)
+    this.withMiddleware(nextMessage, m => console.log(...m))
 
     this.config.storage?.push({
       timestamp: Date.now(),
@@ -48,6 +49,6 @@ export class NodeLogger extends AbstractLogger {
 
     colors.disable()
 
-    return this.getJsonResponse(message, logLevel, from)
+    return rv
   }
 }

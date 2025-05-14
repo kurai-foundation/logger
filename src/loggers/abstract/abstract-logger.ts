@@ -58,7 +58,7 @@ export default abstract class AbstractLogger {
     if (!this.config.json) return
 
     let _module = module ?? "system"
-    let _message = message
+    let _message: PossibleInputs | null | undefined = message
     let _level = level
 
 
@@ -70,12 +70,22 @@ export default abstract class AbstractLogger {
       _message = rest
     }
 
-    if (this.config.storage) this.config.storage.push({ level, timestamp: Date.now(), message: JSON.stringify(message) })
-    console.info(JSON.stringify({
+    if (this.config.storage) this.config.storage.push({ level, timestamp: Date.now(), message: JSON.stringify(_message) })
+    this.withMiddleware({
       module: _module ?? "system",
       level: _level,
       timestamp: Date.now(),
       data: typeof _message !== "object" ? { _message } : _message
-    }))
+    }, m => console.info(JSON.stringify(m)))
+  }
+
+  protected withMiddleware(message: any, onLog: (message: any) => void) {
+    const _msg = () => {
+      if (!this.config.middleware) return message
+
+      return this.config.middleware(message)
+    }
+
+    onLog(_msg())
   }
 }

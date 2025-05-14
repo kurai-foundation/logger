@@ -7,7 +7,9 @@ export default class BrowserLogger extends AbstractLogger {
   }
 
   public log(logLevel: LogLevel, message: any[], from?: string) {
-    if (this.config.json) return this.getJsonResponse(message, logLevel, from)
+    const rv = this.getJsonResponse(message, logLevel, from)
+
+    if (this.config.json) return rv
 
     const messageColor = {
       [LogLevel.WARNING]: [ "orange", "black" ],
@@ -17,8 +19,8 @@ export default class BrowserLogger extends AbstractLogger {
     }[logLevel]
 
     if (this.config.showPrefix === false) {
-      console.log(...message)
-      return this.getJsonResponse(message, logLevel, from)
+      this.withMiddleware(message, m => console.log(...m))
+      return rv
     }
 
     const datePrefix = new Date().toLocaleDateString("en-US")
@@ -46,7 +48,7 @@ export default class BrowserLogger extends AbstractLogger {
       "color: unset"
     ].filter(Boolean)
 
-    console.log(...nextMessage)
+    this.withMiddleware(nextMessage, m => console.log(...m))
 
     this.config.storage?.push({
       timestamp: Date.now(),
@@ -54,6 +56,6 @@ export default class BrowserLogger extends AbstractLogger {
       message: message.map(i => typeof i === "object" ? JSON.stringify(i) : i).join(" ")
     })
 
-    return this.getJsonResponse(message, logLevel, from)
+    return rv
   }
 }
