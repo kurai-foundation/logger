@@ -75,7 +75,7 @@ export default abstract class AbstractLogger {
       module: _module ?? "system",
       level: _level,
       timestamp: Date.now(),
-      data: typeof _message !== "object" ? { _message } : _message
+      data: typeof _message !== "object" ? { message: _message } : _message
     }, m => console.info(JSON.stringify(m)))
   }
 
